@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     def containerId
-                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d")
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d").bash(curl -I "http://localhost:30000/")
                     currentBuild.description = "Container ID: ${containerId}"
                 }
             }
