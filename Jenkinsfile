@@ -39,11 +39,11 @@ pipeline {
         stage('Run curl test') {
             steps {
                 script {
-                    sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:30000/"
+                    sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:3000/"
                 }
             }
         }
-        
+
         stage('Stop and remove container') {
             steps {
                 script {
