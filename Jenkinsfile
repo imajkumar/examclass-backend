@@ -36,6 +36,14 @@ pipeline {
             }
         }
 
+        stage('Run curl test') {
+            steps {
+                script {
+                    sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:30000/"
+                }
+            }
+        }
+        
         stage('Stop and remove container') {
             steps {
                 script {
