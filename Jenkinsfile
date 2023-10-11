@@ -6,6 +6,9 @@ pipeline {
         DOCKER_REPO = 'examclass-backend'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'examclass-backend'
+        EXTERNAL_APP_PORT = '3000'
+        INTERNAL_APP_PORT = '3000'
+   
     }
 
     stages {
@@ -41,18 +44,37 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:3000/"
-                }
-            }
-        }
-
-        stage('Stop and remove container') {
-            steps {
-                script {
                     sh "docker stop ${CONTAINER_NAME}"
                 }
             }
         }
 
+        post {
+        success {
+             always {
+            stage('Stop and remove container') {
+                steps {
+                    script {
+                        sh "docker stop ${CONTAINER_NAME}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        post {
+        success {
+            stage('Final Deployement') {
+                steps {
+                    script {
+                        def containerId
+                        containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+                        }
+                    }
+                }
+            }
+        }
         // stage('Push image') {
         //     steps {
         //         script {
