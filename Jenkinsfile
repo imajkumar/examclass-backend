@@ -26,21 +26,32 @@ pipeline {
             }
         }
         
-        stage('Run temporary image test') {
+        stage('Run temporary image') {
             steps {
                 script {
                     def containerId
-
-                    try {
-                        containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d")
-                        sh "docker exec -i $containerId curl -I http://localhost:30000/"
-                    } finally {
-                        sh "docker stop $containerId"
-                    }
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d")
+                    currentBuild.description = "Container ID: ${containerId}"
                 }
             }
         }
-        
+
+        stage('Run curl test') {
+            steps {
+                script {
+                    sh "docker exec -i ${currentBuild.description} curl -I http://localhost:30000/"
+                }
+            }
+        }
+
+        stage('Stop and remove container') {
+            steps {
+                script {
+                    sh "docker stop ${currentBuild.description}"
+                }
+            }
+        }
+
         // stage('Push image') {
         //     steps {
         //         script {
