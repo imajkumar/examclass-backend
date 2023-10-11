@@ -48,23 +48,13 @@ pipeline {
     }
 
     post {
-        always {
-            stage('Stop and remove container') {
-                steps {
-                    script {
-                        sh "docker stop ${CONTAINER_NAME}" || true
-                        sh "docker rm ${CONTAINER_NAME}" || true
-                    }
-                }
-            }
+        success {
+            script {
+                sh "docker stop ${CONTAINER_NAME}" || true
+                sh "docker rm ${CONTAINER_NAME}" || true
 
-            stage('Final Deployment') {
-                steps {
-                    script {
-                        def containerId
-                        containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
-                    }
-                }
+                def containerId
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
             }
         }
     }
