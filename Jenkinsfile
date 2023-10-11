@@ -44,14 +44,13 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:3000/"
-                    sh "docker stop ${CONTAINER_NAME}"
                 }
             }
         }
-
+        
         post {
-        success {
-             always {
+         success {
+          always {
             stage('Stop and remove container') {
                 steps {
                     script {
@@ -64,7 +63,7 @@ pipeline {
         }
 
         post {
-        success {
+          success {
             stage('Final Deployement') {
                 steps {
                     script {
