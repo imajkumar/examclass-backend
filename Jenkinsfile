@@ -5,6 +5,7 @@ pipeline {
         // DOCKER_REGISTRY = 'https://registry.hub.docker.com'
         DOCKER_REPO = 'examclass-backend'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
+        CONTAINER_NAME = 'examclass-backend'
     }
 
     stages {
@@ -30,16 +31,8 @@ pipeline {
             steps {
                 script {
                     def containerId
-                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d").bash(curl -I "http://localhost:30000/")
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME} bash -c 'curl -I http://localhost:30000/'")
                     currentBuild.description = "Container ID: ${containerId}"
-                }
-            }
-        }
-
-        stage('Run curl test') {
-            steps {
-                script {
-                    sh "docker exec -i ${currentBuild.description} curl -I http://localhost:30000/"
                 }
             }
         }
@@ -47,7 +40,7 @@ pipeline {
         stage('Stop and remove container') {
             steps {
                 script {
-                    sh "docker stop ${currentBuild.description}"
+                    sh "docker stop ${CONTAINER_NAME}"
                 }
             }
         }
