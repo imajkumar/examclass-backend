@@ -35,14 +35,17 @@ pipeline {
                     
                     if (runningContainers) {
                         sh "docker stop ${runningContainers}"
-                    }
-                    
+                }
+
+                script{    
                     def containerId
                     containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME}")
+                    }
                 }
+        
             }
         }
-
+        
         stage('Run curl test') {
             steps {
                 script {
