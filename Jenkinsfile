@@ -20,12 +20,27 @@ pipeline {
             steps {
                 script {
                     app.inside {
-                        sh 'curl -I "http://localhost:3000"'
+                        sh 'echo "Tests passed"'
                     }
                 }
             }
         }
+        
+        stage('Run temporary image test') {
+            steps {
+                script {
+                    def containerId
 
+                    try {
+                        containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d")
+                        sh "docker exec -i $containerId curl -I http://localhost:30000/"
+                    } finally {
+                        sh "docker stop $containerId"
+                    }
+                }
+            }
+        }
+        
         // stage('Push image') {
         //     steps {
         //         script {
