@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     app.inside {
-                        sh 'echo "Tests passed"'
+                        sh 'curl -I "http://localhost:3000"'
                     }
                 }
             }
