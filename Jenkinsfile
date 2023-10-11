@@ -34,7 +34,7 @@ pipeline {
                     def runningContainers = sh(script: 'docker ps -q --filter "name=${CONTAINER_NAME}"', returnStatus: true).trim()
                     
                     if (runningContainers) {
-                        sh "docker stop ${CONTAINER_NAME}"
+                        sh "docker stop ${runningContainers}"
                     }
                     
                     def containerId
