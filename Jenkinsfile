@@ -54,7 +54,7 @@ pipeline {
                 sh "docker rm ${CONTAINER_NAME}" || true
 
                 def containerId
-                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p 3000:3000 --name ${CONTAINER_NAME}")
             }
         }
     }
