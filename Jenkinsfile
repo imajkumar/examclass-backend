@@ -58,11 +58,12 @@ pipeline {
             }
         }
         success {
-            stage("Deployement")
-            steps {
-                script {
-                def containerId
-                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+            stage("Deployement"){
+                steps {
+                    script {
+                    def containerId
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+                    }
                 }
             }
         }
