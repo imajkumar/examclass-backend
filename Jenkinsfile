@@ -54,8 +54,10 @@ pipeline {
             sh "docker stop ${CONTAINER_NAME}"
             }
         success {
-            def containerId
-            containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+            script{
+                def containerId
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+            }
         }
     }
 }
