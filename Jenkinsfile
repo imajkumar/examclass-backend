@@ -51,7 +51,7 @@ pipeline {
     post {
     success {
         script {
-            def runningContainers = sh(script: 'docker ps -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true).trim()
+            def runningContainers = sh(script: 'docker ps -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true)
 
                 if (runningContainers) {
                     sh "docker stop ${CONTAINER_NAME_PRO}"                
