@@ -33,7 +33,7 @@ pipeline {
         stage('Run temporary image') {
             steps {
                 script {
-                    sh "docker stop ${CONTAINER_NAME}"                 
+                    sh "docker stop ${CONTAINER_NAME}"; true                
                     def containerId
                     containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME}")
                 }
