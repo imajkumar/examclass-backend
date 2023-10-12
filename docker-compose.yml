@@ -1,16 +1,16 @@
 version: '3'
 services:
   web:
-    image: "docker push imajkumar/kumardhubi-service:latest"
+    image: 'imajkumar/kumardhubi-service:latest'
     ports:
-      - "3000:3000"
+      - '3000:3000'
   postgres:
-    image: postgres:latest
+    image: 'postgres:latest'
     container_name: postgres-examclass
     ports:
       - '5432:5432'
     volumes:
-      - progresExamDB:/var/lib/postgresql/data
+      - 'progresExamDB:/var/lib/postgresql/data'
     env_file:
       - ./.env
   pgadmin:
@@ -21,14 +21,14 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - "5050:80"
+      - '5050:80'
   redis:
-    image: redis:alpine
+    image: 'redis:alpine'
     container_name: redis-examclass
     ports:
       - '6379:6379'
     volumes:
-      - redisExamDB:/data
+      - 'redisExamDB:/data'
 volumes:
-  progresExamDB:
-  redisExamDB:
+  progresExamDB: null
+  redisExamDB: null
