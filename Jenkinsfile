@@ -67,7 +67,7 @@ pipeline {
         }
 
         always {
-            sh "docker stop ${CONTAINER_NAME_PRO}"
+            sh "docker stop ${CONTAINER_NAME}"
         }
     }
 }
