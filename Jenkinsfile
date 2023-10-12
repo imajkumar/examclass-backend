@@ -50,25 +50,21 @@ pipeline {
     }
 
     post {
-     success {
       always {
-        steps {
-            script {
-            sh "docker stop ${CONTAINER_NAME}"
-            }
-            }
-        }
-        }
-    }
-
-    post {
-      success {
-        steps {
-            script {
-            def containerId
-            containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+            steps {
+                script {
+                sh "docker stop ${CONTAINER_NAME}"
+                }
             }
         }
+        success {
+            stage("Deployement")
+            steps {
+                script {
+                def containerId
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+                }
+            }
         }
     }
 }
