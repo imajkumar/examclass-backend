@@ -46,28 +46,29 @@ pipeline {
                     sh "docker exec -i ${CONTAINER_NAME} curl -I http://localhost:3000/"
                 }
             }
-        post {
-         success {
-          always {
-                steps {
-                    script {
-                        sh "docker stop ${CONTAINER_NAME}"
-                        }
-                    }
-                }
+        }
+    }
+
+    post {
+     success {
+      always {
+        steps {
+            script {
+            sh "docker stop ${CONTAINER_NAME}"
+            }
             }
         }
+        }
+    }
 
-        post {
-          success {
-                steps {
-                    script {
-                        def containerId
-                        containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
-                        }
-                    }
-                }
+    post {
+      success {
+        steps {
+            script {
+            def containerId
+            containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
             }
+        }
         }
     }
 }
