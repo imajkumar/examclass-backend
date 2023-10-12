@@ -8,7 +8,7 @@ pipeline {
         CONTAINER_NAME = 'examclass-backend'
         EXTERNAL_APP_PORT = '3000'
         INTERNAL_APP_PORT = '3000'
-   
+        CONTAINER_NAME_PRO = 'examclass-backend-pro'
     }
 
     stages {
@@ -54,8 +54,17 @@ pipeline {
             }
         success {
             script{
+                def runningContainers = sh(script: 'docker ps -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true).trim()
+                if (runningContainers == 0) {
+                    echo "Container '${CONTAINER_NAME_PRO}' is not running, skipping stop and remove."
+                } else {
+                    sh "docker stop ${CONTAINER_NAME_PRO}"
+                }
+            }
+            
+            script{
                 def containerId
-                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME}")
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME_PRO}")
             }
         }
     }
