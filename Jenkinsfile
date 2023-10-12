@@ -53,10 +53,10 @@ pipeline {
         script {
             def runningContainers = sh(script: 'docker ps -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true)
 
-                if (runningContainers) {
-                    sh "docker stop ${CONTAINER_NAME_PRO}"                
-                } else {
+                if (runningContainers == 0) {
                     echo "Container '${CONTAINER_NAME_PRO}' is not running, skipping stop and remove."
+                } else {
+                    sh "docker stop ${CONTAINER_NAME_PRO}"
                 }
             }
 
