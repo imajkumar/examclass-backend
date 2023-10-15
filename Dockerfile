@@ -20,7 +20,7 @@ EXPOSE 3000
 
 # Command to start your Node.js application 
 
-#CMD ["node", "build/app.js"]
-CMD ["npm", "start"]
+CMD ["node", "dist/src/app.js"]
+#CMD ["npm", "start"]
 
 # Command to start your Node.js application

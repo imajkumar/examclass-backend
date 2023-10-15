@@ -42,8 +42,8 @@ pipeline {
         stage('Run curl test') {
             steps {
                 script {
-                    //sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
-                    echo "TST";
+                    sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
+                    echo "CURL";
                 }
             }
         }
