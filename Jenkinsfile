@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USERNAME = credentials('dockerhub-credentials').username
-        DOCKER_HUB_PASSWORD = credentials('dockerhub-credentials').password
+        DOCKER_HUB_USERNAME = credentials('dockerhubID').username
+        DOCKER_HUB_PASSWORD = credentials('dockerhubID').password
         IMAGE_NAME = 'examclass-api'
         IMAGE_TAG = 'latest'
         CONTAINER_NAME = 'examclass-container'
