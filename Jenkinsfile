@@ -6,8 +6,8 @@ pipeline {
         DOCKER_REPO = 'examclass-backend'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'examclass-backend'
-        EXTERNAL_APP_PORT = '3000'
-        INTERNAL_APP_PORT = '3001'
+        EXTERNAL_APP_PORT = '3001'
+        INTERNAL_APP_PORT = '3000'
         CONTAINER_NAME_PRO = 'examclass-backend-pro'
     }
 
