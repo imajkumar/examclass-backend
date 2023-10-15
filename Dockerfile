@@ -14,7 +14,7 @@ RUN npm install
 # Copy the rest of your application source code to the container
 COPY . .
 
-#RUN npm run start
+RUN npm run start
 # Expose the port your application will run on
 EXPOSE 3000
 
@@ -25,3 +25,5 @@ CMD ["node", "dist/src/app.js"]
 #CMD ["node", "index.js"]
 
 # Command to start your Node.js application  this is nice 
+# Command to start your Node.js application
+
