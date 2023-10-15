@@ -1,5 +1,5 @@
 export const allowedOriginsSystem = [
     'https://www.yoursite.com',
-    'http://127.0.0.1:5500',
+    'http://54.88.157.210:5500',
     'http://localhost:3500'
 ];
