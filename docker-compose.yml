@@ -1,30 +1,37 @@
 version: '3'
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:latest
-    container_name: postgres-examclass
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
     ports:
-      - '5432:5432'
-    volumes:
-      - progresExamDB:/var/lib/postgresql/data
-    env_file:
-      - ./.env
+      - "5432:5432"
+    networks:
+      - database_network
+
+  # pgAdmin
   pgadmin:
-    container_name: pgadmin4_container-examclass
     image: dpage/pgadmin4
-    restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - database_network
+
+  # Redis
   redis:
-    image: redis:alpine
-    container_name: redis-examclass
+    image: redis:latest
     ports:
-      - '6379:6379'
-    volumes:
-      - redisExamDB:/data
-volumes:
-  progresExamDB:
-  redisExamDB:
+      - "6379:6379"
+    networks:
+      - database_network
+
+networks:
+  database_network:
