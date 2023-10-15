@@ -1,6 +1,6 @@
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import config from "config";
-import { CreateUserInput } from "../../schemas/userSchema";
+import { CreateUserInput,LoginUserInput } from "../../schemas/userSchema";
 import {
   createUser,
   findUserByEmail,

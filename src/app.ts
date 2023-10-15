@@ -57,8 +57,9 @@ AppDataSource.initialize()
     );
 
     const port = config.get<number>("port");
+    const HOST = '0.0.0.0';
 
-    app.listen(port, () => {
+    app.listen(port,HOST, () => {
       console.log(`Server is running on port ${port}`);
     });
   })
