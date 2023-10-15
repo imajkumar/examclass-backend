@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to start your Node.js application
-CMD ["npm", "start"]
+CMD ["npm", "src/app.ts"]
