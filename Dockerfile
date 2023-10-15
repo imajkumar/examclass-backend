@@ -23,12 +23,3 @@ CMD [ "npm", "run", "build" ]
 CMD [ "npm", "run", "start" ]
 
 # Command to start your Node.js application
-<<<<<<< HEAD
-
-=======
-#COPY src/app.ts .
-
-#RUN tsc src/app.ts
-
-CMD ["node", "build/app.js"]
->>>>>>> 0f0aec1698a6bad6b695dfabc86896237a33bdd3
