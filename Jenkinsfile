@@ -5,10 +5,10 @@ pipeline {
         // DOCKER_REGISTRY = 'https://registry.hub.docker.com'
         DOCKER_REPO = 'examclass-backend'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
-        CONTAINER_NAME = 'examclass-backend'
+        CONTAINER_NAME = 'examclass-backend1'
         EXTERNAL_APP_PORT = '3000'
         INTERNAL_APP_PORT = '3000'
-        CONTAINER_NAME_PRO = 'examclass-backend-pro'
+        CONTAINER_NAME_PRO = 'examclass-backend1-pro'
     }
 
     stages {
