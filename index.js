@@ -12,6 +12,6 @@ app.get('/', (req, res) => {
   res.send('Backed API TEST Successkk');
 });
  
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
 });
