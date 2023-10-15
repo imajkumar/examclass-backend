@@ -43,6 +43,7 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
+                    echo "CURL";
                 }
             }
         }
