@@ -8,7 +8,7 @@ pipeline {
         CONTAINER_NAME = 'examclass-backend'
         EXTERNAL_APP_PORT = '3000'
         INTERNAL_APP_PORT = '3000'
-        CONTAINER_NAME_PRO = 'examclass-backend-pro'
+        CONTAINER_NAME_PRO = 'examclass-backend-pro1'
     }
 
     stages {
