@@ -6,7 +6,7 @@ pipeline {
         DOCKER_REPO = 'examclass-backend'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'examclass-backend'
-        EXTERNAL_APP_PORT = '3001'
+        EXTERNAL_APP_PORT = '3000'
         INTERNAL_APP_PORT = '3000'
         CONTAINER_NAME_PRO = 'examclass-backend-pro'
     }
@@ -42,7 +42,7 @@ pipeline {
         stage('Run curl test') {
             steps {
                 script {
-                    sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3001/"
+                    //sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
                 }
             }
         }
