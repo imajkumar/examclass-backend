@@ -12,13 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutHandler = exports.refreshAccessTokenHandler = exports.loginUserHandler = exports.registerUserHandler = void 0;
+exports.logoutHandler = exports.refreshAccessTokenHandler = exports.registerUserHandler = void 0;
 const config_1 = __importDefault(require("config"));
 const userService_1 = require("../../services/userService");
 const appError_1 = __importDefault(require("../../utils/appError"));
 const connectRedis_1 = __importDefault(require("../../utils/connectRedis"));
 const jwt_1 = require("../../utils/jwt");
-const user_entity_1 = require("../../entities/user.entity");
 const cookiesOptions = {
     httpOnly: true,
     sameSite: "lax",
@@ -53,31 +52,6 @@ const registerUserHandler = (req, res, next) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.registerUserHandler = registerUserHandler;
-const loginUserHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { email, password } = req.body;
-        const user = yield (0, userService_1.findUserByEmail)({ email });
-        //1. Check if user exists and password is valid
-        if (!user || !(yield user_entity_1.User.comparePasswords(password, user.password))) {
-            return next(new appError_1.default(400, "Invalid email or password"));
-        }
-        // 2. Sign Access and Refresh Tokens
-        const { access_token, refresh_token } = yield (0, userService_1.signTokens)(user);
-        // 3. Add Cookies
-        res.cookie("access_token", access_token, accessTokenCookieOptions);
-        res.cookie("refresh_token", refresh_token, refreshTokenCookieOptions);
-        res.cookie("logged_in", true, Object.assign(Object.assign({}, accessTokenCookieOptions), { httpOnly: false }));
-        // 4. Send response
-        res.status(200).json({
-            status: "success",
-            access_token,
-        });
-    }
-    catch (err) {
-        next(err);
-    }
-});
-exports.loginUserHandler = loginUserHandler;
 const refreshAccessTokenHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const refresh_token = req.cookies.refresh_token;
