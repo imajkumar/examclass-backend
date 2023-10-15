@@ -18,6 +18,10 @@ COPY . .
 EXPOSE 3000
 
 # Command to start your Node.js application 
-CMD ["node","index.js"]
+#CMD ["node","index.js"]
 # Command to start your Node.js application
+COPY src/app.ts .
 
+RUN tsc src/app.ts
+
+CMD ["node", "build/app.js"]
