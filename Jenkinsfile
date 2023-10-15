@@ -1,72 +1,30 @@
 pipeline {
     agent any
     
-    environment {
-        // DOCKER_REGISTRY = 'https://registry.hub.docker.com'
-        DOCKER_REPO = 'kumardhubi-service'
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
-        CONTAINER_NAME = 'examclass-backend'
-        EXTERNAL_APP_PORT = '3000'
-        INTERNAL_APP_PORT = '3000'
-        CONTAINER_NAME_PRO = 'examclass-backend-pro'
-    }
-
-    stages {
-        stage('Build image') {
-            steps {
-                script {
-                    app = docker.build("${DOCKER_REPO}:${DOCKER_TAG}")
+    stages{
+        stage("Code"){
+            steps{
+                git url: "https://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@github.com/imajkumar/examclass-backend.git", branch: "main"
+            }
+        }
+        stage("Build & Test"){
+            steps{
+                sh "docker build . -t node-app-test-new"
+            }
+        }
+        stage("Push to DockerHub"){
+            steps{
+                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                    sh "docker tag node-app-test-new ${env.dockerHubUser}/node-app-test-new:latest"
+                    sh "docker push ${env.dockerHubUser}/node-app-test-new:latest" 
                 }
             }
         }
-
-        stage('Test image') {
-            steps {
-                script {
-                    app.inside {
-                        sh 'echo "Tests passed"'
-                    }
-                }
+        stage("Deploy"){
+            steps{
+                sh "docker-compose down && docker-compose up -d"
             }
-        }
-        
-        stage('Run temporary image') {
-            steps {
-                script {              
-                    def containerId
-                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME}")
-                }
-            }
-        }
-
-        stage('Run curl test') {
-            steps {
-                script {
-                    sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
-                    echo "CURL";
-                }
-            }
-        }
-    }
-    
-    post {
-    success {
-        script {
-                if (sh(script: 'docker ps -a -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true)) {
-                    echo "Container '${CONTAINER_NAME_PRO}' is not running, skipping stop and remove."
-                } else {
-                    sh "docker rm -f ${CONTAINER_NAME_PRO}"
-                }
-            }
-
-            script {
-                def containerId
-                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME_PRO}")
-            }
-        }
-
-        always {
-            sh "docker stop ${CONTAINER_NAME}"
         }
     }
 }
