@@ -1,29 +1,42 @@
 pipeline {
     agent any
-    
-    stages{
-        stage("Code"){
-            steps{
-                git url: "https://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@github.com/imajkumar/examclass-backend.git", branch: "main"
-            }
-        }
-        stage("Build & Test"){
-            steps{
-                sh "docker build . -t node-app-test-new"
-            }
-        }
-        stage("Push to DockerHub"){
-            steps{
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "docker tag node-app-test-new ${env.dockerHubUser}/node-app-test-new:latest"
-                    sh "docker push ${env.dockerHubUser}/node-app-test-new:latest" 
+
+    environment {
+        DOCKER_HUB_USERNAME = credentials('dockerhub-credentials').username
+        DOCKER_HUB_PASSWORD = credentials('dockerhub-credentials').password
+        IMAGE_NAME = 'examclass-api'
+        IMAGE_TAG = 'latest'
+        CONTAINER_NAME = 'examclass-container'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                // Checkout your Node.js API source code from version control (e.g., Git)
+                checkout scm
+
+                // Build the Docker image
+                script {
+                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
                 }
             }
         }
-        stage("Deploy"){
-            steps{
-                sh "docker-compose down && docker-compose up -d"
+
+        stage('Publish to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
+                    sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker push $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Pull and run the Docker container from Docker Hub
+                sh "docker pull $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "docker run -d -p 3000:3000 --name $CONTAINER_NAME $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
     }
