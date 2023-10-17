@@ -12,6 +12,13 @@ pipeline {
     }
 
     stages {
+        stage('Clear old images form machine') {
+            steps {
+                sh """
+                    docker rmi -f $(docker images | grep ${DOCKER_REPO} | awk '{print $3}')
+                """
+            }
+        }
         stage('Build image') {
             steps {
                 script {
@@ -19,7 +26,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test image') {
             steps {
                 script {
@@ -42,7 +48,7 @@ pipeline {
         stage('Run curl test') {
             steps {
                 script {
-                    sh "docker exec -i ${CONTAINER_NAME} curl http://54.88.157.210:3000/"
+                    sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
                     echo "CURL";
                 }
             }
