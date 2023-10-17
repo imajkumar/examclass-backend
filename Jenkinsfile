@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {              
                     def containerId
-                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME}")
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --network=ubuntu_golocal --name ${CONTAINER_NAME}")
                     sh 'sleep 15'
                 }
             }
