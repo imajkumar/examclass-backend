@@ -14,9 +14,9 @@ pipeline {
     stages {
         stage('Clear old images form machine') {
             steps {
-                sh """
-                    docker rmi -f $(docker images | grep ${DOCKER_REPO} | awk '{print $3}')
-                """
+                script{
+                    sh "docker rmi -f $(docker images | grep ${DOCKER_REPO} | awk '{print $3}')"
+                }
             }
         }
         stage('Build image') {
