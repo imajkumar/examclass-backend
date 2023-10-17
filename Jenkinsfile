@@ -42,6 +42,7 @@ pipeline {
                 script {              
                     def containerId
                     containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --name ${CONTAINER_NAME}")
+                    sh 'sleep 5'
                 }
             }
         }
@@ -49,7 +50,7 @@ pipeline {
         stage('Run curl test') {
             steps {
                 script {
-                    sh "docker exec -i ${CONTAINER_NAME} curl http://localhost:3000/"
+                    sh "docker exec -i ${CONTAINER_NAME} curl -Is http://localhost:3000/"
                     echo "CURL";
                 }
             }
