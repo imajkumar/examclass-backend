@@ -15,7 +15,7 @@ pipeline {
         stage('Clear old images form machine') {
             steps {
                 script{
-                    sh "docker rmi -f \$(docker images | grep ${DOCKER_REPO} | awk '{print \$3}', returnStatus: true)"
+                    sh "docker rmi -f \$(docker images | grep ${DOCKER_REPO} | awk '{print \$3}')", returnStatus: true
                 }
             }
         }
