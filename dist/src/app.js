@@ -59,6 +59,7 @@ data_source_1.AppDataSource.initialize()
         });
     });
     const port = config_1.default.get("port");
+    const HOST = '0.0.0.0';
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
