@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const redis_1 = require("redis");
-const redisUrl = 'redis://localhost:6379';
+const redisUrl = 'redis://redis:6379';
 const redisClient = (0, redis_1.createClient)({
     url: redisUrl,
 });
