@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script{
                     echo "Deleting old images"
-                   // sh "docker rmi -f \$(docker images | grep ${DOCKER_REPO} | awk '{print \$3}') || true;"
+                    sh "docker rmi -f \$(docker images | grep ${DOCKER_REPO} | awk '{print \$3}') || true;"
                 }
             }
         }
