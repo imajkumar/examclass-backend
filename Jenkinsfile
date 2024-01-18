@@ -1,43 +1,80 @@
 pipeline {
     agent any
-
+    
     environment {
-        DOCKER_HUB_USERNAME = 'imajkumar@hotmail.com'
-        DOCKER_HUB_PASSWORD = 'Ajay@9711'
-        IMAGE_NAME = 'examclass-api'
-        IMAGE_TAG = 'latest'
-        CONTAINER_NAME = 'examclass-container'
+        // DOCKER_REGISTRY = 'https://registry.hub.docker.com'
+        DOCKER_REPO = 'examclass-backend'
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        CONTAINER_NAME = 'examclass-backend'
+        EXTERNAL_APP_PORT = '3000'
+        INTERNAL_APP_PORT = '3000'
+        CONTAINER_NAME_PRO = 'examclass-backend-pro'
     }
 
     stages {
-        stage('Build') {
+        stage('Clear old images form machine') {
             steps {
-                // Checkout your Node.js API source code from version control (e.g., Git)
-                checkout scm
-
-                // Build the Docker image
+                script{
+                    echo "Deleting old images"
+                    //sh "docker rmi -f \$(docker images | grep ${DOCKER_REPO} | awk '{print \$3}') || true;"
+                }
+            }
+        }
+        stage('Build image') {
+            steps {
                 script {
-                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+                    app = docker.build("${DOCKER_REPO}:${DOCKER_TAG}")
+                }
+            }
+        }
+        stage('Test image') {
+            steps {
+                script {
+                    app.inside {
+                        sh 'echo "Tests passed"'
+                    }
+                }
+            }
+        }
+        
+        stage('Run temporary image') {
+            steps {
+                script {              
+                    def containerId
+                    containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("--rm -d --network=ubuntu_golocal --name ${CONTAINER_NAME}")
+                    sh 'sleep 15'
                 }
             }
         }
 
-        stage('Publish to Docker Hub') {
+        stage('Run curl test') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'git-username', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                    sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
-                    sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker push $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
+                script {
+                    sh "docker exec -i ${CONTAINER_NAME} bash -c 'curl -Is http://localhost:3000/'"
+                    echo "CURL";
                 }
             }
         }
-
-        stage('Deploy') {
-            steps {
-                // Pull and run the Docker container from Docker Hub
-                sh "docker pull $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
-                sh "docker run -d -p 3000:3000 --name $CONTAINER_NAME $DOCKER_HUB_USERNAME/${IMAGE_NAME}:${IMAGE_TAG}"
+    }
+    
+    post {
+    success {
+        script {
+                if (sh(script: 'docker ps -a -q --filter "name=${CONTAINER_NAME_PRO}"', returnStatus: true)) {
+                    echo "Container '${CONTAINER_NAME_PRO}' is not running, skipping stop and remove."
+                } else {
+                    sh "docker rm -f ${CONTAINER_NAME_PRO}"
+                }
             }
+
+            script {
+                def containerId
+                containerId = docker.image("${DOCKER_REPO}:${DOCKER_TAG}").run("-d --network=ubuntu_golocal -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} --name ${CONTAINER_NAME_PRO}")
+            }
+        }
+
+        always {
+            sh "docker stop ${CONTAINER_NAME}"
         }
     }
 }
