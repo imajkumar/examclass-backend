@@ -44,7 +44,7 @@ pipeline {
 
         stage('Deploy to Production') {
             when {
-                branch 'master' // Adjust the condition based on your branch strategy
+                branch 'dev' // Adjust the condition based on your branch strategy
             }
             steps {
                 script {
