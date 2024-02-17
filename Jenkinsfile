@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // DOCKER_REGISTRY = 'https://registry.hub.docker.com'
-        DOCKER_REPO = 'examclass-api'
+        DOCKER_REPO = 'kumardhubi-service:latest'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'examclass-api'
         EXTERNAL_APP_PORT = '3000'
